@@ -2,10 +2,12 @@ import { IPosition, IRobotControl, RoboticSpider } from "./RoboticSpider";
 
 export class RobotControl {
 
+    private static defaultCoordValue: number = 0;
+
     private robot: RoboticSpider;
     private startPosition: IPosition = {
-        x: 0,
-        y: 0,
+        x: RobotControl.defaultCoordValue,
+        y: RobotControl.defaultCoordValue,
     };
     private commandSequence: string;
 
@@ -33,10 +35,6 @@ export class RobotControl {
     }
 
     private validateCoordinate(coord: string): number {
-        if (isNaN(parseInt(coord, 10))) {
-            return 0;
-        } else {
-            return parseInt(coord, 10);
-        }
+        return isNaN(parseInt(coord, 10)) ? RobotControl.defaultCoordValue : parseInt(coord, 10);
     }
 }

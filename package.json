@@ -9,10 +9,7 @@
     "clean": "rm -rf .nyc_output coverage logs node_modules release",
     "lint": "./node_modules/.bin/tslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint-fix": "./node_modules/.bin/tslint --fix \"src/**/*.ts\" \"test/**/*.ts\"",
-    "lintv": "tslint -v",
-    "lintv2": "./node_modules/.bin/tslint -v",
     "open-c": "npx open-cli coverage/index.html",
-    "test": "rimraf .nyc_output ./coverage ./logs && nyc --reporter=lcov --reporter=text-summary mocha -- --config .mocharc.js",
     "test-dev": "rimraf .nyc_output ./coverage ./logs && nyc --reporter=html --reporter=text-summary mocha -- --config .mocharc.js -c"
   },
   "repository": {
