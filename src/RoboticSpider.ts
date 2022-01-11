@@ -36,10 +36,6 @@ export class RoboticSpider {
         this.commands.forEach((command: string) => {
             this.validCommands[command]();
         });
-        return this.getCurrentPosition();
-    }
-
-    private getCurrentPosition(): string {
         return this.formatPosition(this.currentPosition);
     }
 
@@ -48,7 +44,7 @@ export class RoboticSpider {
     }
 
     private translateCommandSequence(commandSequence: string): string[] {
-        const parsedCommandSequence: string[] = commandSequence ? [...commandSequence]: [];
+        const parsedCommandSequence: string[] = commandSequence ? [...commandSequence] : [];
         const filteredCommands: string[] = parsedCommandSequence.filter((command: string) => {
             return Object.keys(this.validCommands).includes(command);
         });
