@@ -1,0 +1,20 @@
+{
+    "all": true,
+    "cache": false,
+    "exclude": [
+        "src/index.ts",
+        "*.d.ts",
+        "src/*.d.ts",
+        "test/**_spec.ts"
+    ],
+    "extension": [
+        ".ts"
+    ],
+    "include": [
+        "src/**/*.ts"
+    ],
+    "require": [
+        "ts-node/register"
+    ],
+    "sourceMap": true
+}
