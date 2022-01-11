@@ -7,12 +7,11 @@ export interface IRobotControl {
     position: IPosition;
     commandSequence: string;
 }
-
 export class RoboticSpider {
 
     private currentPosition: IPosition;
     private commands: string[] = [];
-    private validCommands: any = {
+    private validCommands: { [key: string]: () => void; } = {
         B: (() => {
             --this.currentPosition.y;
         }),

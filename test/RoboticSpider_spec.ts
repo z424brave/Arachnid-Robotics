@@ -55,7 +55,7 @@ describe("RoboticSpider", () => {
       title: "not move from the start position if commands are undefined",
     },
   ];
-  tests.forEach((test: any) => {
+  tests.forEach((test: ITest) => {
     it(`should ${test.title}`, () => {
       const robot: RoboticSpider = new RoboticSpider({
         commandSequence: test.commandSequence,

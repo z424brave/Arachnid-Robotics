@@ -3,7 +3,12 @@ import { expect } from "chai";
 import { RobotControl } from "../src/RobotControl";
 
 describe("RobotControl", () => {
-    const tests: any[] = [
+    interface ITest {
+        command: string;
+        finalPosition: string;
+        title: string;
+      }
+    const tests: ITest[] = [
         {
             command: "0,0,FRFRFFFFFFFLLLLFFFFFRFFFFLFFLRRF",
             finalPosition: "(-1, 21)",
@@ -40,7 +45,7 @@ describe("RobotControl", () => {
             title: "not move if command is undefined",
         },
     ];
-    tests.forEach((test: any) => {
+    tests.forEach((test: ITest) => {
         it(`should ${test.title}`, () => {
             const robotControl: RobotControl = new RobotControl(test.command);
             const result: string = robotControl.executeCommands();
