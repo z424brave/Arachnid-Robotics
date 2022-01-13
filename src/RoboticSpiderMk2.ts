@@ -1,11 +1,11 @@
 import { IDirection } from "./IDirection";
+import { IRobot } from "./IRobot";
+import { IRobotControl } from "./IRobotControl";
 import { IPosition, ISurface } from "./ISurface";
-export interface IRobotControl {
-    position: IPosition;
-    orientation: string;
-    surface: ISurface;
-}
-export class RoboticSpider {
+
+export class RoboticSpiderMk2 implements IRobot {
+
+    public static version: string = "Mk2";
 
     private currentPosition: IPosition;
     private orientation: IDirection;
@@ -16,10 +16,10 @@ export class RoboticSpider {
            this.move();
         }),
         L: (() => {
-            this.turn(this.orientation.left);
+            this.orient(this.orientation.left);
         }),
         R: (() => {
-            this.turn(this.orientation.right);
+            this.orient(this.orientation.right);
         }),
     };
 
@@ -60,24 +60,15 @@ export class RoboticSpider {
         this.surface = options.surface;
     }
 
-    public execute(commandSequence: string): string {
+    public execute(commandSequence: string): void {
         this.commands = this.translateCommandSequence(commandSequence);
         this.commands.forEach((command: string) => {
             this.validCommands[command]();
         });
-        return `(${this.currentPosition.x}, ${this.currentPosition.y})`;
     }
 
-    private translateCommandSequence(commandSequence: string): string[] {
-        const parsedCommandSequence: string[] = commandSequence ? [...commandSequence] : [];
-        const filteredCommands: string[] = parsedCommandSequence.filter((command: string) => {
-            return (Object.keys(this.validCommands)).includes(command);
-        });
-        return filteredCommands;
-    }
-
-    private turn(newDirection: string): void {
-        this.orientation = this.directions[newDirection];
+    public getCurrentPosition(): IPosition {
+        return this.currentPosition;
     }
 
     private move(): void {
@@ -88,5 +79,17 @@ export class RoboticSpider {
         if (this.surface.isMoveValid(newPosition)) {
             this.currentPosition = newPosition;
         }
+    }
+
+    private orient(newDirection: string): void {
+        this.orientation = this.directions[newDirection];
+    }
+
+    private translateCommandSequence(commandSequence: string): string[] {
+        const parsedCommandSequence: string[] = commandSequence ? [...commandSequence] : [];
+        const filteredCommands: string[] = parsedCommandSequence.filter((command: string) => {
+            return (Object.keys(this.validCommands)).includes(command);
+        });
+        return filteredCommands;
     }
 }
