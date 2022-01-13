@@ -1,11 +1,13 @@
+import { IRobot } from "./IRobot";
+import { IRobotControl } from "./IRobotControl";
 import { IPosition, ISurface } from "./ISurface";
-import { IRobotControl, RoboticSpider } from "./RoboticSpider";
+import { RoboticSpiderMk2 } from "./RoboticSpiderMk2";
 export class RobotControl {
 
     private static defaultCoordValue: number = 0;
     private validDirections: string[] = ["east", "north", "south", "west"];
 
-    private robot: RoboticSpider;
+    private robot: IRobot;
     private startPosition: IPosition = {
         x: RobotControl.defaultCoordValue,
         y: RobotControl.defaultCoordValue,
@@ -33,8 +35,9 @@ export class RobotControl {
             orientation: this.startOrientation,
             position: this.startPosition,
             surface: this.surface,
+            version: "2.0.0",
         };
-        this.robot = new RoboticSpider(robotControl);
+        this.robot = new RoboticSpiderMk2(robotControl);
     }
 
     public executeCommands(): string {

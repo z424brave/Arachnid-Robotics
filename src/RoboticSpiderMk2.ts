@@ -1,11 +1,11 @@
 import { IDirection } from "./IDirection";
+import { IRobot } from "./IRobot";
+import { IRobotControl } from "./IRobotControl";
 import { IPosition, ISurface } from "./ISurface";
-export interface IRobotControl {
-    position: IPosition;
-    orientation: string;
-    surface: ISurface;
-}
-export class RoboticSpider {
+
+export class RoboticSpiderMk2 implements IRobot {
+
+    public version: string;
 
     private currentPosition: IPosition;
     private orientation: IDirection;
@@ -16,10 +16,10 @@ export class RoboticSpider {
            this.move();
         }),
         L: (() => {
-            this.turn(this.orientation.left);
+            this.orient(this.orientation.left);
         }),
         R: (() => {
-            this.turn(this.orientation.right);
+            this.orient(this.orientation.right);
         }),
     };
 
@@ -58,6 +58,21 @@ export class RoboticSpider {
         this.currentPosition = options.position;
         this.orientation = this.directions[options.orientation];
         this.surface = options.surface;
+        this.version = options.version;
+    }
+
+    public move(): void {
+        const newPosition: IPosition = {
+            x: this.currentPosition.x + this.orientation.moveX,
+            y: this.currentPosition.y + this.orientation.moveY,
+        };
+        if (this.surface.isMoveValid(newPosition)) {
+            this.currentPosition = newPosition;
+        }
+    }
+
+    public orient(newDirection: string): void {
+        this.orientation = this.directions[newDirection];
     }
 
     public execute(commandSequence: string): string {
@@ -74,19 +89,5 @@ export class RoboticSpider {
             return (Object.keys(this.validCommands)).includes(command);
         });
         return filteredCommands;
-    }
-
-    private turn(newDirection: string): void {
-        this.orientation = this.directions[newDirection];
-    }
-
-    private move(): void {
-        const newPosition: IPosition = {
-            x: this.currentPosition.x + this.orientation.moveX,
-            y: this.currentPosition.y + this.orientation.moveY,
-        };
-        if (this.surface.isMoveValid(newPosition)) {
-            this.currentPosition = newPosition;
-        }
     }
 }

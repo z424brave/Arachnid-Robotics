@@ -1,10 +1,11 @@
 import { expect } from "chai";
+import { IRobot } from "../src/IRobot";
 
 import { IPosition, ISurface } from "../src/ISurface";
-import { RoboticSpider } from "../src/RoboticSpider";
+import { RoboticSpiderMk2 } from "../src/RoboticSpiderMk2";
 import { Wall } from "../src/Wall";
 
-describe("RoboticSpider", () => {
+describe("RoboticSpiderMk2", () => {
   interface ITest {
     commandSequence: string;
     finalPosition: string;
@@ -68,10 +69,11 @@ describe("RoboticSpider", () => {
   ];
   tests.forEach((test: ITest) => {
     it(`should ${test.title}`, () => {
-      const robot: RoboticSpider = new RoboticSpider({
+      const robot: IRobot = new RoboticSpiderMk2({
         orientation: test.startOrientation,
         position: test.startPosition,
         surface: new Wall(test.height, test.width),
+        version: "2.0.0",
       });
       const result: string = robot.execute(test.commandSequence);
       expect(result).eql(test.finalPosition);
