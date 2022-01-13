@@ -1,6 +1,6 @@
-import { IPosition, ISurface } from "./ISurface";
+import { IBoundedSurface, IPosition } from "./ISurface";
 
-export class Wall implements ISurface {
+export class Wall implements IBoundedSurface {
 
     constructor(public width: number = 100, public height: number = width) { }
 

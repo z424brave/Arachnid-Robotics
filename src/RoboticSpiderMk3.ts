@@ -5,23 +5,16 @@ import { IPosition, ISurface } from "./ISurface";
 
 export class RoboticSpiderMk3 implements IRobot {
 
+    public static version: string = "Mk3";
+    public static FuelCapacity: number = 30;
+
     public version: string;
 
     private currentPosition: IPosition;
+    private fuelTankLoad: number;
     private orientation: IDirection;
     private surface: ISurface;
     private commands: string[] = [];
-    private validCommands: { [key: string]: () => void; } = {
-        F: (() => {
-           this.move();
-        }),
-        L: (() => {
-            this.orient(this.orientation.left);
-        }),
-        R: (() => {
-            this.orient(this.orientation.right);
-        }),
-    };
 
     private directions: { [key: string]: IDirection } = {
         east: {
@@ -58,36 +51,57 @@ export class RoboticSpiderMk3 implements IRobot {
         this.currentPosition = options.position;
         this.orientation = this.directions[options.orientation];
         this.surface = options.surface;
-        this.version = options.version;
+        this.fuelTankLoad = RoboticSpiderMk3.FuelCapacity;
     }
 
-    public move(): void {
+    public execute(commandSequence: string): void {
+        this.commands = this.translateCommandSequence(commandSequence || "");
+        this.commands.forEach((command: string) => {
+            switch (command) {
+                case "F":
+                    this.move(1);
+                    break;
+                case command.match(/[2345][F]/)?.input:
+                    const parts: string[] = command.match(/[2345][F]/);
+                    this.move(parseInt(parts[0], 10));
+                    break;
+                case "L":
+                    this.orient(this.orientation.left);
+                    break;
+                case "R":
+                    this.orient(this.orientation.right);
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
+    public getCurrentPosition(): IPosition {
+        return this.currentPosition;
+    }
+
+    private move(moves: number): void {
+        if ((moves > 1) && (this.fuelTankLoad - moves) >= 0) {
+            this.fuelTankLoad = this.fuelTankLoad - moves;
+        } else {
+            moves = 1;
+        }
         const newPosition: IPosition = {
-            x: this.currentPosition.x + this.orientation.moveX,
-            y: this.currentPosition.y + this.orientation.moveY,
+            x: this.currentPosition.x + this.orientation.moveX * moves,
+            y: this.currentPosition.y + this.orientation.moveY * moves,
         };
         if (this.surface.isMoveValid(newPosition)) {
             this.currentPosition = newPosition;
         }
     }
 
-    public orient(newDirection: string): void {
+    private orient(newDirection: string): void {
         this.orientation = this.directions[newDirection];
     }
 
-    public execute(commandSequence: string): string {
-        this.commands = this.translateCommandSequence(commandSequence);
-        this.commands.forEach((command: string) => {
-            this.validCommands[command]();
-        });
-        return `(${this.currentPosition.x}, ${this.currentPosition.y})`;
-    }
-
     private translateCommandSequence(commandSequence: string): string[] {
-        const parsedCommandSequence: string[] = commandSequence ? [...commandSequence] : [];
-        const filteredCommands: string[] = parsedCommandSequence.filter((command: string) => {
-            return (Object.keys(this.validCommands)).includes(command);
-        });
+        const filteredCommands: string[] = commandSequence.match(/[2345][F]|[FLR]/g) || [];
         return filteredCommands;
     }
 }

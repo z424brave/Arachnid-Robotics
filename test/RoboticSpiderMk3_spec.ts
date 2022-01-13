@@ -2,10 +2,10 @@ import { expect } from "chai";
 
 import { IRobot } from "../src/IRobot";
 import { IPosition } from "../src/ISurface";
-import { RoboticSpiderMk2 } from "../src/RoboticSpiderMk2";
-import { Wall } from "../src/Wall";
+import { MarsSurface } from "../src/MarsSurface";
+import { RoboticSpiderMk3 } from "../src/RoboticSpiderMk3";
 
-describe("RoboticSpiderMk2", () => {
+describe("RoboticSpiderMk3", () => {
   interface ITest {
     commandSequence: string;
     finalPosition: IPosition;
@@ -17,43 +17,43 @@ describe("RoboticSpiderMk2", () => {
   }
   const tests: ITest[] = [
     {
-      commandSequence: "FRFRFFFFFFFLLLLFFFFFRFFFFLFFLRRF",
+      commandSequence: "FFRFRF",
       finalPosition: {
-        x: 0,
-        y: 0,
+        x: 1,
+        y: 1,
       },
       startOrientation: "north",
       startPosition: {
         x: 0,
         y: 0,
       },
-      title: "start at (0, 0) and move to (0, 0)",
+      title: "start at (0, 0) and move to (1, -1)",
     },
     {
-      commandSequence: "FFFFFFFFRRRRRRRFFFFLLLBBRRRRRLLLLLLLLLRFFF",
+      commandSequence: "FFRRRL",
       finalPosition: {
         x: 3,
-        y: 14,
+        y: 8,
       },
       startOrientation: "north",
       startPosition: {
         x: 3,
         y: 6,
       },
-      title: "start at (3, 6) and move to (3, 14)",
+      title: "start at (3, 6) and move to (3, 8)",
     },
     {
-      commandSequence: "RRRRRRRRFFFFFFFFFFFLLLBBBBBRRRLLLLLFFLR",
+      commandSequence: "RFFLFF",
       finalPosition: {
-        x: 0,
-        y: 18,
+        x: 2,
+        y: 9,
       },
       startOrientation: "north",
       startPosition: {
         x: 0,
         y: 7,
       },
-      title: "start at (0, 7) and move to (0, 18)",
+      title: "start at (0, 7) and move to (2, 9)",
     },
     {
       commandSequence: "XY",
@@ -84,10 +84,10 @@ describe("RoboticSpiderMk2", () => {
   ];
   tests.forEach((test: ITest) => {
     it(`should ${test.title}`, () => {
-      const robot: IRobot = new RoboticSpiderMk2({
+      const robot: IRobot = new RoboticSpiderMk3({
         orientation: test.startOrientation,
         position: test.startPosition,
-        surface: new Wall(test.height, test.width),
+        surface: new MarsSurface(),
       });
       robot.execute(test.commandSequence);
       const result: IPosition = robot.getCurrentPosition();

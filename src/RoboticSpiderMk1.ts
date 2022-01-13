@@ -1,86 +1,41 @@
-import { IDirection } from "./IDirection";
 import { IRobot } from "./IRobot";
 import { IRobotControl } from "./IRobotControl";
-import { IPosition, ISurface } from "./ISurface";
+import { IPosition } from "./ISurface";
 
-export class RoboticSpiderMk3 implements IRobot {
+export class RoboticSpiderMk1 implements IRobot {
 
-    public version: string;
+    public static version: string = "Mk1";
 
     private currentPosition: IPosition;
-    private orientation: IDirection;
-    private surface: ISurface;
     private commands: string[] = [];
-    private validCommands: { [key: string]: () => void; } = {
+    private validCommands: any = {
+        B: (() => {
+            --this.currentPosition.y;
+        }),
         F: (() => {
-           this.move();
+            ++this.currentPosition.y;
         }),
         L: (() => {
-            this.orient(this.orientation.left);
+            --this.currentPosition.x;
         }),
         R: (() => {
-            this.orient(this.orientation.right);
+            ++this.currentPosition.x;
         }),
-    };
-
-    private directions: { [key: string]: IDirection } = {
-        east: {
-            left: "north",
-            moveX: 1,
-            moveY: 0,
-            name: "east",
-            right: "south",
-        },
-        north: {
-            left: "west",
-            moveX: 0,
-            moveY: 1,
-            name: "north",
-            right: "east",
-        },
-        south: {
-            left: "east",
-            moveX: 0,
-            moveY: -1,
-            name: "south",
-            right: "west",
-        },
-        west: {
-            left: "south",
-            moveX: -1,
-            moveY: 0,
-            name: "west",
-            right: "north",
-        },
     };
 
     constructor(options: IRobotControl) {
         this.currentPosition = options.position;
-        this.orientation = this.directions[options.orientation];
-        this.surface = options.surface;
-        this.version = options.version;
     }
 
-    public move(): void {
-        const newPosition: IPosition = {
-            x: this.currentPosition.x + this.orientation.moveX,
-            y: this.currentPosition.y + this.orientation.moveY,
-        };
-        if (this.surface.isMoveValid(newPosition)) {
-            this.currentPosition = newPosition;
-        }
-    }
-
-    public orient(newDirection: string): void {
-        this.orientation = this.directions[newDirection];
-    }
-
-    public execute(commandSequence: string): string {
+    public execute(commandSequence: string): void {
         this.commands = this.translateCommandSequence(commandSequence);
         this.commands.forEach((command: string) => {
             this.validCommands[command]();
         });
-        return `(${this.currentPosition.x}, ${this.currentPosition.y})`;
+    }
+
+    public getCurrentPosition(): IPosition {
+        return this.currentPosition;
     }
 
     private translateCommandSequence(commandSequence: string): string[] {

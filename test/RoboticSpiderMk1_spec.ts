@@ -1,59 +1,52 @@
 import { expect } from "chai";
 
-import { IRobot } from "../src/IRobot";
+import { Ground } from "../src/Ground";
 import { IPosition } from "../src/ISurface";
-import { RoboticSpiderMk2 } from "../src/RoboticSpiderMk2";
-import { Wall } from "../src/Wall";
+import { RoboticSpiderMk1 } from "../src/RoboticSpiderMk1";
 
-describe("RoboticSpiderMk2", () => {
+describe("RoboticSpiderMk1", () => {
   interface ITest {
     commandSequence: string;
     finalPosition: IPosition;
-    startOrientation: string;
     startPosition: IPosition;
-    height?: number;
     title: string;
-    width?: number;
   }
   const tests: ITest[] = [
     {
       commandSequence: "FRFRFFFFFFFLLLLFFFFFRFFFFLFFLRRF",
       finalPosition: {
-        x: 0,
-        y: 0,
+        x: -1,
+        y: 21,
       },
-      startOrientation: "north",
       startPosition: {
         x: 0,
         y: 0,
       },
-      title: "start at (0, 0) and move to (0, 0)",
+      title: "start at (0, 0) and move to (-1, 21)",
     },
     {
       commandSequence: "FFFFFFFFRRRRRRRFFFFLLLBBRRRRRLLLLLLLLLRFFF",
       finalPosition: {
-        x: 3,
-        y: 14,
+        x: 4,
+        y: 19,
       },
-      startOrientation: "north",
       startPosition: {
         x: 3,
         y: 6,
       },
-      title: "start at (3, 6) and move to (3, 14)",
+      title: "start at (3, 6) and move to (4, 19)",
     },
     {
       commandSequence: "RRRRRRRRFFFFFFFFFFFLLLBBBBBRRRLLLLLFFLR",
       finalPosition: {
-        x: 0,
-        y: 18,
+        x: 3,
+        y: 15,
       },
-      startOrientation: "north",
       startPosition: {
         x: 0,
         y: 7,
       },
-      title: "start at (0, 7) and move to (0, 18)",
+      title: "start at (0, 7) and move to (3, 15)",
     },
     {
       commandSequence: "XY",
@@ -61,7 +54,6 @@ describe("RoboticSpiderMk2", () => {
         x: 0,
         y: 7,
       },
-      startOrientation: "north",
       startPosition: {
         x: 0,
         y: 7,
@@ -74,7 +66,6 @@ describe("RoboticSpiderMk2", () => {
         x: 3,
         y: 8,
       },
-      startOrientation: "north",
       startPosition: {
         x: 3,
         y: 8,
@@ -84,14 +75,13 @@ describe("RoboticSpiderMk2", () => {
   ];
   tests.forEach((test: ITest) => {
     it(`should ${test.title}`, () => {
-      const robot: IRobot = new RoboticSpiderMk2({
-        orientation: test.startOrientation,
+      const robot: RoboticSpiderMk1 = new RoboticSpiderMk1({
         position: test.startPosition,
-        surface: new Wall(test.height, test.width),
+        surface: new Ground(),
       });
       robot.execute(test.commandSequence);
-      const result: IPosition = robot.getCurrentPosition();
-      expect(result).eql(test.finalPosition);
+      const finalPosition: IPosition = robot.getCurrentPosition();
+      expect(finalPosition).eql(test.finalPosition);
     });
   });
 });

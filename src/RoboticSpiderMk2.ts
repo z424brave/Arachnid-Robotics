@@ -5,7 +5,7 @@ import { IPosition, ISurface } from "./ISurface";
 
 export class RoboticSpiderMk2 implements IRobot {
 
-    public version: string;
+    public static version: string = "Mk2";
 
     private currentPosition: IPosition;
     private orientation: IDirection;
@@ -58,10 +58,20 @@ export class RoboticSpiderMk2 implements IRobot {
         this.currentPosition = options.position;
         this.orientation = this.directions[options.orientation];
         this.surface = options.surface;
-        this.version = options.version;
     }
 
-    public move(): void {
+    public execute(commandSequence: string): void {
+        this.commands = this.translateCommandSequence(commandSequence);
+        this.commands.forEach((command: string) => {
+            this.validCommands[command]();
+        });
+    }
+
+    public getCurrentPosition(): IPosition {
+        return this.currentPosition;
+    }
+
+    private move(): void {
         const newPosition: IPosition = {
             x: this.currentPosition.x + this.orientation.moveX,
             y: this.currentPosition.y + this.orientation.moveY,
@@ -71,16 +81,8 @@ export class RoboticSpiderMk2 implements IRobot {
         }
     }
 
-    public orient(newDirection: string): void {
+    private orient(newDirection: string): void {
         this.orientation = this.directions[newDirection];
-    }
-
-    public execute(commandSequence: string): string {
-        this.commands = this.translateCommandSequence(commandSequence);
-        this.commands.forEach((command: string) => {
-            this.validCommands[command]();
-        });
-        return `(${this.currentPosition.x}, ${this.currentPosition.y})`;
     }
 
     private translateCommandSequence(commandSequence: string): string[] {
